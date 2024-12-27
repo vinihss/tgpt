@@ -781,6 +781,9 @@ func makeRequestAndGetData(input string, params structs.Params, extraOptions str
 			if *shouldExecuteCommand {
 				fmt.Println()
 				executeCommand(shellName, shellOptions, fullText)
+			} else if *shouldExecuteCommand {
+				fmt.Println(fullText)
+
 			} else {
 				bold.Print("\n\nExecute shell command? [y/n]: ")
 				reader := bufio.NewReader(os.Stdin)

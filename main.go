@@ -44,6 +44,7 @@ var preprompt *string
 var url *string
 var logFile *string
 var shouldExecuteCommand *bool
+var shouldNotExecuteCommand *bool
 
 func main() {
 	execPath, err := os.Executable()
@@ -69,6 +70,7 @@ func main() {
 	url = flag.String("url", "https://api.openai.com/v1/chat/completions", "url for openai providers")
 	logFile = flag.String("log", "", "Filepath to log conversation to.")
 	shouldExecuteCommand = flag.Bool(("y"), false, "Instantly execute the shell command")
+	shouldNotExecuteCommand = flag.Bool(("n"), false, "No execute the shell command")
 
 	isQuiet := flag.Bool("q", false, "Gives response back without loading animation")
 	flag.BoolVar(isQuiet, "quiet", false, "Gives response back without loading animation")
@@ -179,11 +181,11 @@ func main() {
 					fmt.Fprintln(os.Stderr, `Example: tgpt -q "What is encryption?"`)
 					os.Exit(1)
 				}
-				getSilentText(*preprompt + trimmedPrompt + contextText + pipedInput, structs.ExtraOptions{})
+				getSilentText(*preprompt+trimmedPrompt+contextText+pipedInput, structs.ExtraOptions{})
 			} else {
 				formattedInput := getFormattedInputStdin()
 				fmt.Println()
-				getSilentText(*preprompt + formattedInput + cleanPipedInput, structs.ExtraOptions{})
+				getSilentText(*preprompt+formattedInput+cleanPipedInput, structs.ExtraOptions{})
 			}
 		case *isShell:
 			if len(prompt) > 1 {
@@ -338,7 +340,7 @@ func main() {
 				os.Exit(1)
 			}
 
-			getData(*preprompt+formattedInput+contextText+pipedInput, structs.Params{}, structs.ExtraOptions{IsNormal: true, IsInteractive: false, })
+			getData(*preprompt+formattedInput+contextText+pipedInput, structs.Params{}, structs.ExtraOptions{IsNormal: true, IsInteractive: false})
 		}
 
 	} else {
@@ -347,7 +349,7 @@ func main() {
 		input := scanner.Text()
 		go loading(&stopSpin)
 		formattedInput := strings.TrimSpace(input)
-		getData(*preprompt+formattedInput+pipedInput, structs.Params{}, structs.ExtraOptions{IsInteractive: false, })
+		getData(*preprompt+formattedInput+pipedInput, structs.Params{}, structs.ExtraOptions{IsInteractive: false})
 	}
 }
 
